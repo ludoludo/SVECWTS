@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/SVECWTS06012024_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[39.1948554023694,-78.20440624706043],[39.19753996778282,-78.19891024186214]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'feet',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqfeet',
+            secondaryAreaUnit: 'sqmiles'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatelliteHybrid_0');
+        map.getPane('pane_GoogleSatelliteHybrid_0').style.zIndex = 400;
+        var layer_GoogleSatelliteHybrid_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatelliteHybrid_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_GoogleSatelliteHybrid_0;
+        map.addLayer(layer_GoogleSatelliteHybrid_0);
+        function pop_SVECWTS06012024_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>PostID</strong><br />' + (feature.properties['PostID'] !== null ? autolinker.link(feature.properties['PostID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Column ID'] !== null ? autolinker.link(feature.properties['Column ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Min Reveal</strong><br />' + (feature.properties['Min Reveal'] !== null ? autolinker.link(feature.properties['Min Reveal'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Max Reveal</strong><br />' + (feature.properties['Max Reveal'] !== null ? autolinker.link(feature.properties['Max Reveal'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Post Type</strong><br />' + (feature.properties['Post Type'] !== null ? autolinker.link(feature.properties['Post Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Hardware Type</strong><br />' + (feature.properties['Hardware Type'] !== null ? autolinker.link(feature.properties['Hardware Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Pile Refusal Chance</strong><br />' + (feature.properties['Pile Refusal Chance'] !== null ? autolinker.link(feature.properties['Pile Refusal Chance'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_SVECWTS06012024_1_0(feature) {
+            switch(String(feature.properties['Pile Refusal Chance'])) {
+                case 'HIGH':
+                    return {
+                pane: 'pane_SVECWTS06012024_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.94)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,1,1,0.94)',
+                interactive: true,
+            }
+                    break;
+                case 'LOW':
+                    return {
+                pane: 'pane_SVECWTS06012024_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.94)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(4,254,0,0.94)',
+                interactive: true,
+            }
+                    break;
+                case 'MED':
+                    return {
+                pane: 'pane_SVECWTS06012024_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.94)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,217,1,0.94)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_SVECWTS06012024_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,0.94)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,203,123,0.94)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_SVECWTS06012024_1');
+        map.getPane('pane_SVECWTS06012024_1').style.zIndex = 401;
+        map.getPane('pane_SVECWTS06012024_1').style['mix-blend-mode'] = 'normal';
+        var layer_SVECWTS06012024_1 = new L.geoJson(json_SVECWTS06012024_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_SVECWTS06012024_1',
+            layerName: 'layer_SVECWTS06012024_1',
+            pane: 'pane_SVECWTS06012024_1',
+            onEachFeature: pop_SVECWTS06012024_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_SVECWTS06012024_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_SVECWTS06012024_1);
+        map.addLayer(layer_SVECWTS06012024_1);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'SVEC - WTS - 06012024<br /><table><tr><td style="text-align: center;"><img src="legend/SVECWTS06012024_1_HIGH0.png" /></td><td>HIGH</td></tr><tr><td style="text-align: center;"><img src="legend/SVECWTS06012024_1_LOW1.png" /></td><td>LOW</td></tr><tr><td style="text-align: center;"><img src="legend/SVECWTS06012024_1_MED2.png" /></td><td>MED</td></tr><tr><td style="text-align: center;"><img src="legend/SVECWTS06012024_1_3.png" /></td><td></td></tr></table>': layer_SVECWTS06012024_1,"Google Satellite Hybrid": layer_GoogleSatelliteHybrid_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_SVECWTS06012024_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'PostID'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Column ID": "int","PostID": "int","Max Reveal": "real","Min Reveal": "real","Pile Refusal Chance": "str","Post Type": "str","Hardware Type": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ColumnID = document.createElement("div");
+            div_ColumnID.id = "div_ColumnID";
+            div_ColumnID.className = "slider";
+            document.getElementById("menu").appendChild(div_ColumnID);
+            var lab_ColumnID = document.createElement('div');
+            lab_ColumnID.innerHTML  = 'Column ID: <span id="val_ColumnID"></span>';
+            lab_ColumnID.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_ColumnID);
+            var reset_ColumnID = document.createElement('div');
+            reset_ColumnID.innerHTML = 'clear filter';
+            reset_ColumnID.className = 'filterlabel';
+            lab_ColumnID.className = 'filterlabel';
+            reset_ColumnID.onclick = function() {
+                sel_ColumnID.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_ColumnID);
+            var sel_ColumnID = document.getElementById('div_ColumnID');
+            noUiSlider.create(sel_ColumnID, {
+                connect: true,
+                start: [1, 39],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 1,
+                max: 39
+                }
+            });
+            sel_ColumnID.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_ColumnID = document.getElementById('val_ColumnID');
+            val_ColumnID.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PostID = document.createElement("div");
+            div_PostID.id = "div_PostID";
+            div_PostID.className = "slider";
+            document.getElementById("menu").appendChild(div_PostID);
+            var lab_PostID = document.createElement('div');
+            lab_PostID.innerHTML  = 'PostID: <span id="val_PostID"></span>';
+            lab_PostID.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_PostID);
+            var reset_PostID = document.createElement('div');
+            reset_PostID.innerHTML = 'clear filter';
+            reset_PostID.className = 'filterlabel';
+            lab_PostID.className = 'filterlabel';
+            reset_PostID.onclick = function() {
+                sel_PostID.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_PostID);
+            var sel_PostID = document.getElementById('div_PostID');
+            noUiSlider.create(sel_PostID, {
+                connect: true,
+                start: [1, 1732],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 1,
+                max: 1732
+                }
+            });
+            sel_PostID.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_PostID = document.getElementById('val_PostID');
+            val_PostID.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_MaxReveal = document.createElement("div");
+            div_MaxReveal.id = "div_MaxReveal";
+            div_MaxReveal.className = "slider";
+            document.getElementById("menu").appendChild(div_MaxReveal);
+            var lab_MaxReveal = document.createElement('div');
+            lab_MaxReveal.innerHTML  = 'Max Reveal: <span id="val_MaxReveal"></span>';
+            lab_MaxReveal.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_MaxReveal);
+            var reset_MaxReveal = document.createElement('div');
+            reset_MaxReveal.innerHTML = 'clear filter';
+            reset_MaxReveal.className = 'filterlabel';
+            lab_MaxReveal.className = 'filterlabel';
+            reset_MaxReveal.onclick = function() {
+                sel_MaxReveal.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_MaxReveal);
+            var sel_MaxReveal = document.getElementById('div_MaxReveal');
+            noUiSlider.create(sel_MaxReveal, {
+                connect: true,
+                start: [4.67, 7.67],
+                range: {
+                min: 4.67,
+                max: 7.67
+                }
+            });
+            sel_MaxReveal.noUiSlider.on('update', function (values) {
+            val_MaxReveal = document.getElementById('val_MaxReveal');
+            val_MaxReveal.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_MinReveal = document.createElement("div");
+            div_MinReveal.id = "div_MinReveal";
+            div_MinReveal.className = "slider";
+            document.getElementById("menu").appendChild(div_MinReveal);
+            var lab_MinReveal = document.createElement('div');
+            lab_MinReveal.innerHTML  = 'Min Reveal: <span id="val_MinReveal"></span>';
+            lab_MinReveal.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_MinReveal);
+            var reset_MinReveal = document.createElement('div');
+            reset_MinReveal.innerHTML = 'clear filter';
+            reset_MinReveal.className = 'filterlabel';
+            lab_MinReveal.className = 'filterlabel';
+            reset_MinReveal.onclick = function() {
+                sel_MinReveal.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_MinReveal);
+            var sel_MinReveal = document.getElementById('div_MinReveal');
+            noUiSlider.create(sel_MinReveal, {
+                connect: true,
+                start: [3.33, 6.33],
+                range: {
+                min: 3.33,
+                max: 6.33
+                }
+            });
+            sel_MinReveal.noUiSlider.on('update', function (values) {
+            val_MinReveal = document.getElementById('val_MinReveal');
+            val_MinReveal.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PileRefusalChance = document.createElement('div');
+            div_PileRefusalChance.id = "div_PileRefusalChance";
+            div_PileRefusalChance.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PileRefusalChance);
+            sel_PileRefusalChance = document.createElement('select');
+            sel_PileRefusalChance.multiple = true;
+            sel_PileRefusalChance.size = 3;
+            sel_PileRefusalChance.id = "sel_PileRefusalChance";
+            var PileRefusalChance_options_str = "<option value='' unselected></option>";
+            sel_PileRefusalChance.onchange = function(){filterFunc()};
+            PileRefusalChance_options_str  += '<option value="HIGH">HIGH</option>';
+            PileRefusalChance_options_str  += '<option value="LOW">LOW</option>';
+            PileRefusalChance_options_str  += '<option value="MED">MED</option>';
+            sel_PileRefusalChance.innerHTML = PileRefusalChance_options_str;
+            div_PileRefusalChance.appendChild(sel_PileRefusalChance);
+            var lab_PileRefusalChance = document.createElement('div');
+            lab_PileRefusalChance.innerHTML = 'Pile Refusal Chance';
+            lab_PileRefusalChance.className = 'filterlabel';
+            div_PileRefusalChance.appendChild(lab_PileRefusalChance);
+            var reset_PileRefusalChance = document.createElement('div');
+            reset_PileRefusalChance.innerHTML = 'clear filter';
+            reset_PileRefusalChance.className = 'filterlabel';
+            reset_PileRefusalChance.onclick = function() {
+                var options = document.getElementById("sel_PileRefusalChance").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PileRefusalChance.appendChild(reset_PileRefusalChance);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PostType = document.createElement('div');
+            div_PostType.id = "div_PostType";
+            div_PostType.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PostType);
+            sel_PostType = document.createElement('select');
+            sel_PostType.multiple = true;
+            sel_PostType.size = 4;
+            sel_PostType.id = "sel_PostType";
+            var PostType_options_str = "<option value='' unselected></option>";
+            sel_PostType.onchange = function(){filterFunc()};
+            PostType_options_str  += '<option value="BLUE">BLUE</option>';
+            PostType_options_str  += '<option value="BROWN">BROWN</option>';
+            PostType_options_str  += '<option value="GREEN">GREEN</option>';
+            PostType_options_str  += '<option value="ORANGE">ORANGE</option>';
+            sel_PostType.innerHTML = PostType_options_str;
+            div_PostType.appendChild(sel_PostType);
+            var lab_PostType = document.createElement('div');
+            lab_PostType.innerHTML = 'Post Type';
+            lab_PostType.className = 'filterlabel';
+            div_PostType.appendChild(lab_PostType);
+            var reset_PostType = document.createElement('div');
+            reset_PostType.innerHTML = 'clear filter';
+            reset_PostType.className = 'filterlabel';
+            reset_PostType.onclick = function() {
+                var options = document.getElementById("sel_PostType").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PostType.appendChild(reset_PostType);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_HardwareType = document.createElement('div');
+            div_HardwareType.id = "div_HardwareType";
+            div_HardwareType.className= "filterselect";
+            document.getElementById("menu").appendChild(div_HardwareType);
+            sel_HardwareType = document.createElement('select');
+            sel_HardwareType.multiple = true;
+            sel_HardwareType.size = 4;
+            sel_HardwareType.id = "sel_HardwareType";
+            var HardwareType_options_str = "<option value='' unselected></option>";
+            sel_HardwareType.onchange = function(){filterFunc()};
+            HardwareType_options_str  += '<option value="blue">blue</option>';
+            HardwareType_options_str  += '<option value="brown">brown</option>';
+            HardwareType_options_str  += '<option value="green">green</option>';
+            HardwareType_options_str  += '<option value="orange">orange</option>';
+            sel_HardwareType.innerHTML = HardwareType_options_str;
+            div_HardwareType.appendChild(sel_HardwareType);
+            var lab_HardwareType = document.createElement('div');
+            lab_HardwareType.innerHTML = 'Hardware Type';
+            lab_HardwareType.className = 'filterlabel';
+            div_HardwareType.appendChild(lab_HardwareType);
+            var reset_HardwareType = document.createElement('div');
+            reset_HardwareType.innerHTML = 'clear filter';
+            reset_HardwareType.className = 'filterlabel';
+            reset_HardwareType.onclick = function() {
+                var options = document.getElementById("sel_HardwareType").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_HardwareType.appendChild(reset_HardwareType);
+        </script>
+    </body>
+</html>
